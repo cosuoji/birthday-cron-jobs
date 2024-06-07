@@ -8,6 +8,9 @@ import dotenv from "dotenv"
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs"
+import schedule from "node-schedule"
+import User from "./database/schema/userSchema.js";
+import nodemailer from "nodemailer";
 
 const app = express();
 dotenv.config()
@@ -29,11 +32,14 @@ app.set("views", "./views")
 
 
 
+
+
 //main route setup 
 app.get("/", (req, res)=>{
     res.sendFile(path.join(__dirname, "index.html"))
 })
 
+//infoRoute
 app.use("/", infoRoute)
 
 //catch 
@@ -51,3 +57,30 @@ mongoose.connect(MONGODB_URI)
             logger.info("app is running")
         })
     })
+
+//schedule the cron job for 7 am each day
+schedule.scheduleJob("* * * * *", async _ =>{
+    console.log("This job runs at 7am each day")
+    const date = new Date();
+    let monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
+    let month = monthArray.indexOf(date.toDateString().split(" ")[1]) + 1
+
+    if(month < 10){
+     month = "0" + month.toString();
+    }
+  
+    let day = date.toDateString().split(" ")[2]
+
+    const birthdaySqwa = await User.find({day_of_birth: day, month_of_birth: month})
+    let emailArray = []
+    for(let i = 0; i < birthdaySqwa.length; i++){
+        //console.log(birthdaySqwa[i])
+        emailArray.push(birthdaySqwa[i].email)
+    }
+
+    console.log(emailArray)
+
+})  
+
+
+

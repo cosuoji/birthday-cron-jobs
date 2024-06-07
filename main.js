@@ -9,25 +9,4 @@ window.addEventListener("load", (event) => {
 
   datePickerId.max = new Date().toISOString().split("T")[0];
 
-
-  // submit.addEventListener("click", event=>{
-   
-  //  console.log(dob.value, name.value, username.value, email.value)
-
-  //  fetch("/", {
-  //   method: "POST",
-  //   body: JSON.stringify({
-  //      dob: dob.value,
-  //      name: name.value, 
-  //      username: username.value, 
-  //      email: email.value
-  //   }),
-  //       headers: {
-  //           "Content-type": "application/json; charset=UTF-8"
-  //       }
-  //   })
-  //       .then((response) => response.json())
-  //       .then((json) => console.log(json));                   
-  // })
-
 });

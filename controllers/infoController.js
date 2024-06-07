@@ -3,6 +3,7 @@ import * as infoService from "../services/infoServices.js"
 
 
 
+
 export const addUserToDatabase = async(req, res) =>{
     try{
         const {name, username, dob, email} = req.body;
