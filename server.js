@@ -62,7 +62,7 @@ mongoose.connect(MONGODB_URI)
  
   
 //schedule the cron job for 7 am each day
-schedule.scheduleJob("* * * * *", async _ =>{
+schedule.scheduleJob("0 7 * * *", async _ =>{
     console.log("This job runs at 7am each day")
     const date = new Date();
     let monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
