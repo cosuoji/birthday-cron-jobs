@@ -10,7 +10,9 @@ import { fileURLToPath } from "url";
 import fs from "fs"
 import schedule from "node-schedule"
 import User from "./database/schema/userSchema.js";
-import nodemailer from "nodemailer";
+import nodemailer from "nodemailer"
+
+
 
 const app = express();
 dotenv.config()
@@ -29,7 +31,6 @@ app.use(express.static(__dirname))
 
 app.set("view engine, 'ejs")
 app.set("views", "./views")
-
 
 
 
@@ -58,12 +59,16 @@ mongoose.connect(MONGODB_URI)
         })
     })
 
+ 
+  
 //schedule the cron job for 7 am each day
 schedule.scheduleJob("* * * * *", async _ =>{
     console.log("This job runs at 7am each day")
     const date = new Date();
     let monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
     let month = monthArray.indexOf(date.toDateString().split(" ")[1]) + 1
+    let emailArray = [] 
+
 
     if(month < 10){
      month = "0" + month.toString();
@@ -72,15 +77,40 @@ schedule.scheduleJob("* * * * *", async _ =>{
     let day = date.toDateString().split(" ")[2]
 
     const birthdaySqwa = await User.find({day_of_birth: day, month_of_birth: month})
-    let emailArray = []
+    
     for(let i = 0; i < birthdaySqwa.length; i++){
         //console.log(birthdaySqwa[i])
         emailArray.push(birthdaySqwa[i].email)
     }
+ 
+    let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth:{
+        //type: 'OAuth2',
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD,
+        // clientId: process.env.OAUTH_CLIENTID,
+        // clientSecret: process.env.OAUTH_CLIENT_SECRET,
+        // refreshToken: process.env.OAUTH_REFRESH_TOKEN
+    }
+})
+    let mailOptions = {
+        from: "qelvinz@gmail.com",
+        to: emailArray,
+        subject: "Happy Birthday",
+        text: "Hi let's test this"
+    }
 
-    console.log(emailArray)
+
+
+ transporter.sendMail(mailOptions, (err, data)=>{
+      if (err) {
+        console.log("Error " + err);
+      } else {
+        console.log("Email sent successfully");
+      }
+ })
+
 
 })  
-
-
 

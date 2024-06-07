@@ -6,9 +6,13 @@ export const addUserToDatabase = async(name,day,month,username, email)=>{
     try{
         const checkEmail = await User.findOne({email: email})
         if(checkEmail){
-            throw new ErrorWithStatus("User Exists")
+            throw new ErrorWithStatus("Email Exists")
         }
 
+        const checkUsername = await User.findOne({username: username})
+        if(checkUsername){
+            throw new ErrorWithStatus("Username  Exists")
+        }
 
 
         const newUser = new User({name: name, 
